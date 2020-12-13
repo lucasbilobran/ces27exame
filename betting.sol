@@ -38,16 +38,19 @@ contract Betting {
         teams[teamCount] = Team(teamCount, _name, 0);
     }
     
-    function teamsExist (uint _id) private returns (bool) {
+    function teamsExist (uint _id) public view returns (bool) {
         return _id > 0 && _id <= teamCount;
     }
     
     // Owner function only
-    function endEvent(uint winnerTeamId) public {
+    function endEvent(uint winnerTeamId) payable public {
         require(msg.sender == owner);
         
-        uint256 totalPrize = 0;
         uint256 winnerTeamAmount = teams[winnerTeamId].amount;
+        uint256 totalPrize = 0;
+        address pAcc;
+        uint256 proportion;
+        
         for(uint256 i = 1; i <= teamCount; i++){
             if (teams[i].id != winnerTeamId)
                 totalPrize += teams[i].amount;
@@ -55,23 +58,24 @@ contract Betting {
         
         // individualPrize = betAmount + totalPrize * proportion
         for(i = 0; i < playersAcc.length; i++){
-            address pAcc = playersAcc[i];
+            pAcc = playersAcc[i];
             if(players[pAcc].teamSelected == winnerTeamId){
-                uint256 proportion = players[pAcc].amountBet/winnerTeamAmount;
+                proportion = players[pAcc].amountBet/winnerTeamAmount;
                 transferPrize(pAcc, players[pAcc].amountBet + totalPrize*proportion);
             }
         }
         
         // Delete everything
-        for(i = 1; i <= teamCount; i++){
-            teams[i].amount = 0;
-        }
+        //for(i = 1; i <= teamCount; i++){
+        //    teams[i].amount = 0;
+        //}
         // TODO: search how to destroy contract
         
     }
     
     
     function transferPrize(address winner, uint256 prize) private {
+        require(address(this).balance >= prize);
         winner.transfer(prize);
     }
 
