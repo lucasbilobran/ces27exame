@@ -25,8 +25,7 @@ contract Betting {
         uint team1Score;
         uint team2Score;
     }
-    mapping(bytes32 => uint256) possibleBets;
-    
+ 
     // Model a Player
     struct Player {
       uint256 amountBet;
@@ -131,7 +130,7 @@ contract Betting {
             
         }
         
-        totalPrize = totalPrize*(1-ownerFee/100);
+        totalPrize = (totalPrize*(100-ownerFee))/100;
         
         
         // individualPrize = betAmount + totalPrize * proportion
@@ -145,14 +144,14 @@ contract Betting {
             
             if(currPlayer.score <= maxScoreForPrize) {
                 // players[pAcc].amountBet + totalPrize*proportion
-                if (currPlayer.score == 0) {
-                    amountToTransfer += totalPrize*(prizePoportions[0]/1000)*(currPlayer.amountBet/score0Balance);
+                if (currPlayer.score == 0 && score0Balance > 0) {
+                    amountToTransfer += (totalPrize*prizePoportions[0]*currPlayer.amountBet)/(1000*score0Balance);
                 }
-                else if (currPlayer.score == 1) {
-                    amountToTransfer += totalPrize*(prizePoportions[1]/1000)*(currPlayer.amountBet/score0Balance);
+                else if (currPlayer.score == 1 && score1Balance > 0) {
+                    amountToTransfer += (totalPrize*prizePoportions[1]*currPlayer.amountBet)/(1000*score1Balance);
                 }
-                else if (currPlayer.score == 2) {
-                    amountToTransfer += totalPrize*(prizePoportions[2]/1000)*(currPlayer.amountBet/score0Balance);
+                else if (currPlayer.score == 2 && score2Balance > 0) {
+                    amountToTransfer += (totalPrize*prizePoportions[2]*currPlayer.amountBet)/(1000*score2Balance);
                 }
                 
                 transferPrize(pAcc, amountToTransfer);
@@ -162,7 +161,6 @@ contract Betting {
         // transfer the money left
         transferPrize(owner, address(this).balance);
         
-        // TODO: search how to destroy contract
         contractState = 2;
     }
     
