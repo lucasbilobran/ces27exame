@@ -304,7 +304,7 @@
 					var val1 = $('#val1').val()
                     var val2 = $('#val2').val()
                     var acc = accounts[0];
-					return contract.methods.bet(val1, val2);
+					return contract.methods.bet(val1, val2).send({from: acc})
 				}).then(function(tx)
 				{
 					console.log(tx);
