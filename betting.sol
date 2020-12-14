@@ -204,11 +204,11 @@ contract Betting {
     }
     
     // Return team name
-    function getTeamName(uint _teamId) public view returns (uint) {
+    function getTeamName(uint _teamId) public view returns (string) {
         if (_teamId == 1)
-            return team1.id;
+            return team1.name;
 
-        return team2.id;
+        return team2.name;
     }
     
 }
