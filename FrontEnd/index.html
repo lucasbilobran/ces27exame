@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apostas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="" />
+    <meta name="copyright" content="" />
+    <link rel="stylesheet" type="text/css" href="css/kickstart.css" media="all" />                  <!-- KICKSTART -->
+    <link rel="stylesheet" type="text/css" href="style.css" media="all" />                          <!-- CUSTOM STYLES -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/kickstart.js"></script>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+
+<!-- Menu Horizontal -->
+<ul class="menu">
+<li class="current"><a href="">Apostas</a></li>
+<li><a href="">Admin</a></li>
+</ul>
+
+<div class="grid">
+	
+<!-- ===================================== END HEADER ===================================== -->
+	 
+<div class="col_12">
+    <div class="col_12 center">
+    <h2>Realização de Apostas</h3>
+    </div>
+    
+    <hr />
+
+    <div class="col_12 center">
+        <p>Account Connected: <a id='coinbase'></a></p>
+        <p>Actual Block Number: <a id='blockNumber'></a></p>
+        <p>Contract Address: <a id='address'></a></p>
+    </div>
+
+	<div class="col_12 center">
+    <h3>Jogo 1</h3>
+        <div class="col_6 center">
+            <label class="col_12" for="val1"><h5 id="time1"></h5></label>
+            <input class="col_12" id="val1" type="text" />
+        </div>
+        <div class="col_6 center">
+            <label class="col_12" for="val2"><h5 id="time2"></h5></label>
+            <input class="col_12" id="val2" type="text" />
+        </div>
+        <div class="col_12 center">
+            <label class="col_12" for="valor">Valor da Aposta</label>
+        </div>
+        <div class="col_12 center">
+            <input class="col_12" id="valor" type="text" />
+        </div>
+        <div class="col_12 center">
+            <button class="green large col_12" id="apostar1" >Apostar</button>
+        </div>
+    </div>
+    
+    <hr />
+
+    <!-- <div class="col_12 center">
+        <h3>Jogo Old</h3>
+            <div class="col_6 center">
+                <label class="col_12" for="text1"><a id="time1"></a></label>
+                <button class="green large col_12" id="apostar1" >Apostar</button>
+            </div>
+            <div class="col_6 center">
+                <label class="col_12" for="text2"><a id="time2"></a></label>
+                <button class="green large col_12" id="apostar2" >Apostar</button>
+            </div>
+        </div>
+
+    <hr /> -->
+
+</div>
+
+</div><!-- END GRID -->
+
+<!-- To use web3, jquery and materialize (for toast warnings) libs -->
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+    var contract;
+    $(document).ready(function(){
+        // making conection with blockchain
+        if (typeof web3 !== 'undefined') {
+            // Use MetaMask's provider
+            web3 = new Web3(web3.currentProvider);
+
+        } else {
+        // Use localhost provider or some IP address
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        /////////////////////////////
+        // To see on console
+        web3.eth.getAccounts().then(console.log);
+        web3.eth.getBlockNumber().then(console.log);
+        web3.eth.isMining().then(console.log);
+
+        // Create variables to use on html page
+        web3.eth.getCoinbase().then(function(coinbase){
+            $('#coinbase').html(coinbase);
+        })
+
+        // Create variables to use on html page
+        web3.eth.getBlockNumber().then(function(blockNumber){
+            $('#blockNumber').html(blockNumber);
+        })
+
+        /////////////////////////////
+        // Sample of a contract's address deployed in Ropsten test network
+        var address = "0xCf442c0fFbA83aaC3F0D5F3C67e6F2aCB15170e4"
+
+        $('#address').html(address)
+
+        var abi = [
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_team1Score",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_team2Score",
+                    "type": "uint256"
+                }
+            ],
+            "name": "bet",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_finalTeam1Score",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_finalTeam2Score",
+                    "type": "uint256"
+                }
+            ],
+            "name": "endEvent",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "lockEvent",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "activePlayer",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "getEventBalance",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_teamId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getTeamName",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "owner",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "players",
+            "outputs": [
+                {
+                    "name": "amountBet",
+                    "type": "uint256"
+                },
+                {
+                    "components": [
+                        {
+                            "name": "team1Score",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "team2Score",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "bet",
+                    "type": "tuple"
+                },
+                {
+                    "name": "score",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ]
+
+        // connect, via web3, your variable contract to the deployed contract, using his ABI and address	
+        contract = new web3.eth.Contract(abi, address);
+
+        // team names
+        contract.methods.getTeamName(1).call().then(function(name)
+        {
+            $('#time1').html(name);
+        })
+        contract.methods.getTeamName(2).call().then(function(name)
+        {
+            $('#time2').html(name);
+        })
+
+
+        $('#apostar1').click(function()
+			{
+				// M.toast({html:'Transaction received and will be mined!'});
+                console.log("Transaction received and will be mined!");
+                
+                var value = $('#valor').val()
+                contract.options.gasPrice = value
+
+				web3.eth.getAccounts().then(function(accounts)
+				{
+					var val1 = $('#val1').val()
+                    var val2 = $('#val2').val()
+                    var acc = accounts[0];
+					return contract.methods.bet(val1, val2);
+				}).then(function(tx)
+				{
+					console.log(tx);
+					if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+				}).catch(function(tx)
+				{
+					if (tx){
+						alert('Some error has occurred, go to console!')
+					}
+					console.log(tx);
+					M.toast({html:tx})
+				})
+			})
+        
+    })
+</script>
+
+</body></html>
