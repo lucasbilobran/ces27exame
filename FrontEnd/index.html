@@ -33,23 +33,15 @@
     
     <hr />
 
-	<div class="col_12 center">
-	<h3>Jogo 1</h3>
-        <div class="col_6 center">
-            <label class="col_12" for="text1">TIME1</label>
-            <input class="col_12" id="text1" type="text" />
-        </div>
-        <div class="col_6 center">
-            <label class="col_12" for="text2">TIME2</label>
-            <input class="col_12" id="text2" type="text" />
-        </div>
-        <button class="blue large col_12">Apostar</button>
-	</div>
-	
-	<hr />
-    
     <div class="col_12 center">
-	<h3>Jogo 2</h3>
+        <p>Account Connected: <a id='coinbase'></a></p>
+        <p>Actual Block Number: <a id='blockNumber'></a></p>
+        <p>Contract Address: <a id='address'></a></p>
+        <p>Contract Address: <a id='teamCount'></a></p>
+    </div>
+
+	<div class="col_12 center">
+    <h3>Jogo 1</h3>
         <div class="col_6 center">
             <label class="col_12" for="text1">TIME1</label>
             <input class="col_12" id="text1" type="text" />
@@ -58,35 +50,323 @@
             <label class="col_12" for="text2">TIME2</label>
             <input class="col_12" id="text2" type="text" />
         </div>
-        <button class="blue large col_12">Apostar</button>
+        <button class="green large col_12" id="apostar" >Apostar</button>
     </div>
     
     <hr />
 
     <div class="col_12 center">
-    <h3>Jogo 3</h3>
-        <div class="col_6 center">
-            <label class="col_12" for="text1">TIME1</label>
-            <input class="col_12" id="text1" type="text" />
+        <h3>Jogo Old</h3>
+            <div class="col_6 center">
+                <label class="col_12" for="text1"><a id="time1"></a></label>
+                <button class="green large col_12" id="apostar1" >Apostar</button>
+            </div>
+            <div class="col_6 center">
+                <label class="col_12" for="text2"><a id="time2"></a></label>
+                <button class="green large col_12" id="apostar2" >Apostar</button>
+            </div>
         </div>
-        <div class="col_6 center">
-            <label class="col_12" for="text2">TIME2</label>
-            <input class="col_12" id="text2" type="text" />
-        </div>
-        <button class="blue large col_12">Apostar</button>
-	</div>
-    
-    <hr />
 
+    <hr />
 
 </div>
 
 </div><!-- END GRID -->
 
-<!-- ===================================== START FOOTER ===================================== -->
-<div class="clear"></div>
-<div id="footer">
+<!-- To use web3, jquery and materialize (for toast warnings) libs -->
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-</div>
+<script>
+    var contract;
+    $(document).ready(function(){
+        // making conection with blockchain
+        if (typeof web3 !== 'undefined') {
+            // Use MetaMask's provider
+            web3 = new Web3(web3.currentProvider);
+
+        } else {
+        // Use localhost provider or some IP address
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        /////////////////////////////
+        // To see on console
+        web3.eth.getAccounts().then(console.log);
+        web3.eth.getBlockNumber().then(console.log);
+        web3.eth.isMining().then(console.log);
+
+        // Create variables to use on html page
+        web3.eth.getCoinbase().then(function(coinbase){
+            $('#coinbase').html(coinbase);
+        })
+
+        // Create variables to use on html page
+        web3.eth.getBlockNumber().then(function(blockNumber){
+            $('#blockNumber').html(blockNumber);
+        })
+
+        /////////////////////////////
+        // Sample of a contract's address deployed in Ropsten test network
+        var address = "0x84329dE5Ba1d3a26F4Ec87DE74E0530411716B55"
+
+        $('#address').html(address)
+
+        var abi = [
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "winnerTeamId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "endEvent",
+                "outputs": [],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "teams",
+                "outputs": [
+                    {
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_teamIdSelected",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "bet",
+                "outputs": [],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_teamId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getTeamName",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "teamCount",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_teamId",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "getTeamAmount",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [],
+                "name": "getEventBalance",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "name": "activePlayers",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "_id",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "teamsExist",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "name": "players",
+                "outputs": [
+                    {
+                        "name": "amountBet",
+                        "type": "uint256"
+                    },
+                    {
+                        "name": "teamSelected",
+                        "type": "uint256"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "payable": false,
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            }
+        ]
+
+        // connect, via web3, your variable contract to the deployed contract, using his ABI and address	
+        contract = new web3.eth.Contract(abi, address);
+        contract.methods.teamCount().call().then(function(tc)
+        {
+            $('#teamCount').html(tc);
+        })
+
+        // team names
+        contract.methods.getTeamName(1).call().then(function(name)
+        {
+            $('#time1').html(name);
+        })
+        contract.methods.getTeamName(2).call().then(function(name)
+        {
+            $('#time2').html(name);
+        })
+
+
+        $('#apostar1').click(function()
+			{
+				M.toast({html:'Transaction received and will be mined!'});
+				console.log("Transaction received and will be mined!");
+
+                web3.eth.getAccounts().then(function(accounts)
+				{
+                    var acc = accounts[0];
+                    console.log(acc)
+					return contract.methods.bet(0);
+				})
+
+				web3.eth.getAccounts().then(function(accounts)
+				{
+					var acc = accounts[0];
+					return contract.methods.bet(0);
+				}).then(function(tx)
+				{
+					console.log(tx);
+					if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+				}).catch(function(tx)
+				{
+					if (tx){
+						alert('Some error has occurred, go to console!')
+					}
+					console.log(tx);
+					M.toast({html:tx})
+				})
+			})
+        
+    })
+</script>
 
 </body></html>
