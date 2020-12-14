@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Apostas</title>
+    <title>Administração do Jogo</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="" />
@@ -18,8 +18,8 @@
 
 <!-- Menu Horizontal -->
 <ul class="menu">
-<li class="current"><a href="">Apostas</a></li>
-<li><a href="admin.html">Admin</a></li>
+<li><a href="index.html">Apostas</a></li>
+<li class="current"><a href="">Admin</a></li>
 </ul>
 
 <div class="grid">
@@ -28,7 +28,7 @@
 	 
 <div class="col_12">
     <div class="col_12 center">
-    <h2>Realização de Apostas</h3>
+    <h2>Administração</h3>
     </div>
     
     <hr />
@@ -48,8 +48,15 @@
                 <h4>Total apostado: <a id="total1"></a></h4>  
             </div>
         </div>
+        <div class="col_12 center">
+            <button class="red large col_12" id="lock1" >Trancar Apostas</button>
+        </div>
+
+        <hr />
+
+        <h4>Resultado Final</h4>
         <div class="col_6 center">
-            <label class="col_12" for="val11"><h5 id="time11"></h5></label>
+            <label class="col_12" for="val1"><h5 id="time11"></h5></label>
             <input class="col_12" id="val11" type="text" />
         </div>
         <div class="col_6 center">
@@ -57,13 +64,7 @@
             <input class="col_12" id="val12" type="text" />
         </div>
         <div class="col_12 center">
-            <label class="col_12" for="valor1">Valor da Aposta</label>
-        </div>
-        <div class="col_12 center">
-            <input class="col_12" id="valor1" type="text" />
-        </div>
-        <div class="col_12 center">
-            <button class="green large col_12" id="apostar1" >Apostar</button>
+            <button class="blue large col_12" id="end1" >Encerrar Contrato</button>
         </div>
     </div>
     
@@ -79,6 +80,13 @@
                 <h4>Total apostado: <a id="total2"></a></h4>  
             </div>
         </div>
+        <div class="col_12 center">
+            <button class="red large col_12" id="lock2" >Trancar Apostas</button>
+        </div>
+
+        <hr />
+
+        <h4>Resultado Final</h4>
         <div class="col_6 center">
             <label class="col_12" for="val21"><h5 id="time21"></h5></label>
             <input class="col_12" id="val21" type="text" />
@@ -88,13 +96,7 @@
             <input class="col_12" id="val22" type="text" />
         </div>
         <div class="col_12 center">
-            <label class="col_12" for="valor2">Valor da Aposta</label>
-        </div>
-        <div class="col_12 center">
-            <input class="col_12" id="valor2" type="text" />
-        </div>
-        <div class="col_12 center">
-            <button class="green large col_12" id="apostar2" >Apostar</button>
+            <button class="blue large col_12" id="end2" >Encerrar Contrato</button>
         </div>
     </div>
     
@@ -110,6 +112,13 @@
                 <h4>Total apostado: <a id="total3"></a></h4>  
             </div>
         </div>
+        <div class="col_12 center">
+            <button class="red large col_12" id="lock3" >Trancar Apostas</button>
+        </div>
+
+        <hr />
+
+        <h4>Resultado Final</h4>
         <div class="col_6 center">
             <label class="col_12" for="val31"><h5 id="time31"></h5></label>
             <input class="col_12" id="val31" type="text" />
@@ -119,13 +128,7 @@
             <input class="col_12" id="val32" type="text" />
         </div>
         <div class="col_12 center">
-            <label class="col_12" for="valor3">Valor da Aposta</label>
-        </div>
-        <div class="col_12 center">
-            <input class="col_12" id="valor3" type="text" />
-        </div>
-        <div class="col_12 center">
-            <button class="green large col_12" id="apostar3" >Apostar</button>
+            <button class="blue large col_12" id="end3" >Encerrar Contrato</button>
         </div>
     </div>
     
@@ -358,7 +361,7 @@
             "stateMutability": "nonpayable",
             "type": "constructor"
         }
-]
+    ]
 
         // connect, via web3, your variable contract to the deployed contract, using his ABI and address	
         contract1 = new web3.eth.Contract(abi, address1);
@@ -391,11 +394,10 @@
             }
         })
 
-        contract1.options.gas = 3000000
+        contract1.options.gas = 3000000 
 
-
-        // team names
-        contract2.methods.getTeamName(1).call().then(function(name)
+         // team names
+         contract2.methods.getTeamName(1).call().then(function(name)
         {
             $('#time21').html(name);
         })
@@ -422,9 +424,8 @@
 
         contract2.options.gas = 3000000 
 
-
-         // team names
-         contract3.methods.getTeamName(1).call().then(function(name)
+        // team names
+        contract3.methods.getTeamName(1).call().then(function(name)
         {
             $('#time31').html(name);
         })
@@ -450,88 +451,150 @@
         })
 
         contract3.options.gas = 3000000 
-
-
-        $('#apostar1').click(function()
-			{
-				// M.toast({html:'Transaction received and will be mined!'});
-                console.log("Transaction received and will be mined!");
-                
-                var value = parseInt($('#valor1').val())
-
-				web3.eth.getAccounts().then(function(accounts)
-				{
-					var val1 = $('#val11').val()
-                    var val2 = parseInt($('#val12').val())
-                    var acc = accounts[0];
-					return contract1.methods.bet(val1, val2).send({value: value, from: acc})
-				}).then(function(tx)
-				{
-					console.log(tx);
-					if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
-				}).catch(function(tx)
-				{
-					if (tx){
-						alert('Some error has occurred, go to console!')
-					}
-					console.log(tx);
-					M.toast({html:tx})
-            	})
-            })
             
-            $('#apostar2').click(function()
-			{
-				// M.toast({html:'Transaction received and will be mined!'});
-                console.log("Transaction received and will be mined!");
-                
-                var value = parseInt($('#valor2').val())
+        $('#lock1').click(function()
+        {
+            // M.toast({html:'Transaction received and will be mined!'});
+            console.log("Transaction received and will be mined!");
 
-				web3.eth.getAccounts().then(function(accounts)
-				{
-					var val1 = $('#val21').val()
-                    var val2 = parseInt($('#val22').val())
-                    var acc = accounts[0];
-					return contract2.methods.bet(val1, val2).send({value: value, from: acc})
-				}).then(function(tx)
-				{
-					console.log(tx);
-					if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
-				}).catch(function(tx)
-				{
-					if (tx){
-						alert('Some error has occurred, go to console!')
-					}
-					console.log(tx);
-					M.toast({html:tx})
-            	})
+            web3.eth.getAccounts().then(function(accounts)
+            {
+                var acc = accounts[0];
+                return contract1.methods.lockEvent().send({value: 0, from: acc})
+            }).then(function(tx)
+            {
+                console.log(tx);
+                if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+            }).catch(function(tx)
+            {
+                if (tx){
+                    alert('Some error has occurred, go to console!')
+                }
+                console.log(tx);
+                M.toast({html:tx})
             })
-            
-            $('#apostar3').click(function()
-			{
-				// M.toast({html:'Transaction received and will be mined!'});
-                console.log("Transaction received and will be mined!");
-                
-                var value = parseInt($('#valor3').val())
+        })
+        
+        $('#end1').click(function()
+        {
+            // M.toast({html:'Transaction received and will be mined!'});
+            console.log("Transaction received and will be mined!");
 
-				web3.eth.getAccounts().then(function(accounts)
-				{
-					var val1 = $('#val31').val()
-                    var val2 = parseInt($('#val32').val())
-                    var acc = accounts[0];
-					return contract3.methods.bet(val1, val2).send({value: value, from: acc})
-				}).then(function(tx)
-				{
-					console.log(tx);
-					if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
-				}).catch(function(tx)
-				{
-					if (tx){
-						alert('Some error has occurred, go to console!')
-					}
-					console.log(tx);
-					M.toast({html:tx})
-            	})
-			})
+            web3.eth.getAccounts().then(function(accounts)
+            {
+                var val1 = $('#val11').val()
+                var val2 = parseInt($('#val12').val())
+                var acc = accounts[0];
+                return contract1.methods.endEvent(val1, val2).send({value: 0, from: acc})
+            }).then(function(tx)
+            {
+                console.log(tx);
+                if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+            }).catch(function(tx)
+            {
+                if (tx){
+                    alert('Some error has occurred, go to console!')
+                }
+                console.log(tx);
+                M.toast({html:tx})
+            })
+        })
+
+        $('#lock2').click(function()
+        {
+            // M.toast({html:'Transaction received and will be mined!'});
+            console.log("Transaction received and will be mined!");
+
+            web3.eth.getAccounts().then(function(accounts)
+            {
+                var acc = accounts[0];
+                return contract2.methods.lockEvent().send({value: 0, from: acc})
+            }).then(function(tx)
+            {
+                console.log(tx);
+                if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+            }).catch(function(tx)
+            {
+                if (tx){
+                    alert('Some error has occurred, go to console!')
+                }
+                console.log(tx);
+                M.toast({html:tx})
+            })
+        })
+        
+        $('#end2').click(function()
+        {
+            // M.toast({html:'Transaction received and will be mined!'});
+            console.log("Transaction received and will be mined!");
+
+            web3.eth.getAccounts().then(function(accounts)
+            {
+                var val1 = $('#val21').val()
+                var val2 = parseInt($('#val22').val())
+                var acc = accounts[0];
+                return contract2.methods.endEvent(val1, val2).send({value: 0, from: acc})
+            }).then(function(tx)
+            {
+                console.log(tx);
+                if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+            }).catch(function(tx)
+            {
+                if (tx){
+                    alert('Some error has occurred, go to console!')
+                }
+                console.log(tx);
+                M.toast({html:tx})
+            })
+        })
+
+        $('#lock3').click(function()
+        {
+            // M.toast({html:'Transaction received and will be mined!'});
+            console.log("Transaction received and will be mined!");
+
+            web3.eth.getAccounts().then(function(accounts)
+            {
+                var acc = accounts[0];
+                return contract3.methods.lockEvent().send({value: 0, from: acc})
+            }).then(function(tx)
+            {
+                console.log(tx);
+                if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+            }).catch(function(tx)
+            {
+                if (tx){
+                    alert('Some error has occurred, go to console!')
+                }
+                console.log(tx);
+                M.toast({html:tx})
+            })
+        })
+        
+        $('#end3').click(function()
+        {
+            // M.toast({html:'Transaction received and will be mined!'});
+            console.log("Transaction received and will be mined!");
+
+            web3.eth.getAccounts().then(function(accounts)
+            {
+                var val1 = $('#val31').val()
+                var val2 = parseInt($('#val32').val())
+                var acc = accounts[0];
+                return contract3.methods.endEvent(val1, val2).send({value: 0, from: acc})
+            }).then(function(tx)
+            {
+                console.log(tx);
+                if(!alert("Transaction mined at block " + tx.blockNumber + "\nBlockHash = " + tx.blockHash)){window.location.reload();}
+            }).catch(function(tx)
+            {
+                if (tx){
+                    alert('Some error has occurred, go to console!')
+                }
+                console.log(tx);
+                M.toast({html:tx})
+            })
+        })
         
     })
 </script>
