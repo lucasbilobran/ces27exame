@@ -290,21 +290,22 @@
             $('#time2').html(name);
         })
 
+        contract.options.gas = 100000000000
+
 
         $('#apostar1').click(function()
 			{
 				// M.toast({html:'Transaction received and will be mined!'});
                 console.log("Transaction received and will be mined!");
                 
-                var value = $('#valor').val()
-                contract.options.gasPrice = value
+                var value = parseInt($('#valor').val())
 
 				web3.eth.getAccounts().then(function(accounts)
 				{
 					var val1 = $('#val1').val()
-                    var val2 = $('#val2').val()
+                    var val2 = parseInt($('#val2').val())
                     var acc = accounts[0];
-					return contract.methods.bet(val1, val2).send({from: acc})
+					return contract.methods.bet(val1, val2).send({value: value, from: acc})
 				}).then(function(tx)
 				{
 					console.log(tx);
@@ -316,7 +317,7 @@
 					}
 					console.log(tx);
 					M.toast({html:tx})
-				})
+            	})
 			})
         
     })
