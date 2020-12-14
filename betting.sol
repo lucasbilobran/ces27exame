@@ -209,4 +209,14 @@ contract Betting {
         return team2.name;
     }
     
+    // Return team name
+    function getEventState() public view returns (string) {
+        if (contractState == 0)
+            return "Valid";
+        else if(contractState == 1)
+            return "Locked";
+        else 
+            return "Finished";
+    }
+    
 }
