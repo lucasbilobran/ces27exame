@@ -37,25 +37,32 @@
         <p>Account Connected: <a id='coinbase'></a></p>
         <p>Actual Block Number: <a id='blockNumber'></a></p>
         <p>Contract Address: <a id='address'></a></p>
-        <p>Contract Address: <a id='teamCount'></a></p>
     </div>
 
 	<div class="col_12 center">
     <h3>Jogo 1</h3>
         <div class="col_6 center">
-            <label class="col_12" for="text1">TIME1</label>
-            <input class="col_12" id="text1" type="text" />
+            <label class="col_12" for="val1"><h5 id="time1"></h5></label>
+            <input class="col_12" id="val1" type="text" />
         </div>
         <div class="col_6 center">
-            <label class="col_12" for="text2">TIME2</label>
-            <input class="col_12" id="text2" type="text" />
+            <label class="col_12" for="val2"><h5 id="time2"></h5></label>
+            <input class="col_12" id="val2" type="text" />
         </div>
-        <button class="green large col_12" id="apostar" >Apostar</button>
+        <div class="col_12 center">
+            <label class="col_12" for="valor">Valor da Aposta</label>
+        </div>
+        <div class="col_12 center">
+            <input class="col_12" id="valor" type="text" />
+        </div>
+        <div class="col_12 center">
+            <button class="green large col_12" id="apostar1" >Apostar</button>
+        </div>
     </div>
     
     <hr />
 
-    <div class="col_12 center">
+    <!-- <div class="col_12 center">
         <h3>Jogo Old</h3>
             <div class="col_6 center">
                 <label class="col_12" for="text1"><a id="time1"></a></label>
@@ -67,7 +74,7 @@
             </div>
         </div>
 
-    <hr />
+    <hr /> -->
 
 </div>
 
@@ -109,221 +116,169 @@
 
         /////////////////////////////
         // Sample of a contract's address deployed in Ropsten test network
-        var address = "0x84329dE5Ba1d3a26F4Ec87DE74E0530411716B55"
+        var address = "0xCf442c0fFbA83aaC3F0D5F3C67e6F2aCB15170e4"
 
         $('#address').html(address)
 
         var abi = [
-            {
-                "constant": false,
-                "inputs": [
-                    {
-                        "name": "winnerTeamId",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "endEvent",
-                "outputs": [],
-                "payable": true,
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "teams",
-                "outputs": [
-                    {
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "name": "name",
-                        "type": "string"
-                    },
-                    {
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": false,
-                "inputs": [
-                    {
-                        "name": "_teamIdSelected",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "bet",
-                "outputs": [],
-                "payable": true,
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "_teamId",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "getTeamName",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "string"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "teamCount",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "owner",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "_teamId",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "getTeamAmount",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "getEventBalance",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "name": "activePlayers",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "bool"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "_id",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "teamsExist",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "bool"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "name": "players",
-                "outputs": [
-                    {
-                        "name": "amountBet",
-                        "type": "uint256"
-                    },
-                    {
-                        "name": "teamSelected",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "constructor"
-            }
-        ]
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_team1Score",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_team2Score",
+                    "type": "uint256"
+                }
+            ],
+            "name": "bet",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "name": "_finalTeam1Score",
+                    "type": "uint256"
+                },
+                {
+                    "name": "_finalTeam2Score",
+                    "type": "uint256"
+                }
+            ],
+            "name": "endEvent",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [],
+            "name": "lockEvent",
+            "outputs": [],
+            "payable": true,
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "activePlayer",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "getEventBalance",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "_teamId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getTeamName",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "owner",
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "players",
+            "outputs": [
+                {
+                    "name": "amountBet",
+                    "type": "uint256"
+                },
+                {
+                    "components": [
+                        {
+                            "name": "team1Score",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "team2Score",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "bet",
+                    "type": "tuple"
+                },
+                {
+                    "name": "score",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ]
 
         // connect, via web3, your variable contract to the deployed contract, using his ABI and address	
         contract = new web3.eth.Contract(abi, address);
-        contract.methods.teamCount().call().then(function(tc)
-        {
-            $('#teamCount').html(tc);
-        })
 
         // team names
         contract.methods.getTeamName(1).call().then(function(name)
@@ -338,20 +293,18 @@
 
         $('#apostar1').click(function()
 			{
-				M.toast({html:'Transaction received and will be mined!'});
-				console.log("Transaction received and will be mined!");
-
-                web3.eth.getAccounts().then(function(accounts)
-				{
-                    var acc = accounts[0];
-                    console.log(acc)
-					return contract.methods.bet(0);
-				})
+				// M.toast({html:'Transaction received and will be mined!'});
+                console.log("Transaction received and will be mined!");
+                
+                var value = $('#valor').val()
+                contract.options.gasPrice = value
 
 				web3.eth.getAccounts().then(function(accounts)
 				{
-					var acc = accounts[0];
-					return contract.methods.bet(0);
+					var val1 = $('#val1').val()
+                    var val2 = $('#val2').val()
+                    var acc = accounts[0];
+					return contract.methods.bet(val1, val2);
 				}).then(function(tx)
 				{
 					console.log(tx);
